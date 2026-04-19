@@ -1,0 +1,10 @@
+{
+  "name": "swayatra-workspace",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "build:sql-gen": "cd frontend && npx tsc data/monuments.ts data/hotels.ts data/recommendations.ts data/footfall.ts data/trends.ts --module commonjs --target es2020 --esModuleInterop --skipLibCheck --outDir .tmp-sql-gen",
+    "seed:mysql": "node database/gen_mysql_seed.js"
+  }
+}
