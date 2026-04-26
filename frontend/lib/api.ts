@@ -8,8 +8,14 @@ export function getApiBaseUrl(): string {
 }
 
 export function getWsFootfallUrl(): string {
-  const u = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000/ws/footfall';
-  return u;
+  // Client-side (browser)
+  if (typeof window !== 'undefined') {
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    return `${protocol}://${window.location.host}/ws/footfall`;
+  }
+
+  // Fallback (server-side rendering)
+  return process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost/ws/footfall';
 }
 
 export type ApiEnvelope<T> = {
