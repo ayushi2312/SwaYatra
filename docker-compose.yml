@@ -1,6 +1,7 @@
 
 services:
   backend:
+
     build: ./backend
     container_name: swayatra-backend
     ports:
@@ -8,7 +9,8 @@ services:
     env_file:
       - ./backend/.env
     depends_on:
-      - db
+      swayatra-db:
+        condition: service_healthy
 
   frontend:
     build: ./frontend
@@ -18,7 +20,7 @@ services:
     depends_on:
       - backend
 
-  db:
+  swayatra-db:
     image: mysql:8
     container_name: swayatra-db
     restart: always
@@ -26,9 +28,13 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: swayatra
     ports:
-      - "3306:3306"
+     - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     volumes:
-      - db_data:/var/lib/mysql
-
+      - mysql-data:/var/lib/mysql
 volumes:
-  db_data:
+  mysql-data:
