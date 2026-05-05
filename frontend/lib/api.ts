@@ -3,19 +3,21 @@
  */
 
 export function getApiBaseUrl(): string {
-  const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+  const defaultBase =
+    process.env.NODE_ENV === 'production'
+      ? 'https://api.swa-yatra.com'
+      : 'http://localhost:4000';
+  const base = process.env.NEXT_PUBLIC_API_URL || defaultBase;
   return base.replace(/\/$/, '');
 }
 
 export function getWsFootfallUrl(): string {
-  // Client-side (browser)
-  if (typeof window !== 'undefined') {
-    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    return `${protocol}://${window.location.host}/ws/footfall`;
-  }
-
-  // Fallback (server-side rendering)
-  return process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost/ws/footfall';
+  const defaultWs =
+    process.env.NODE_ENV === 'production'
+      ? 'wss://api.swa-yatra.com/ws/footfall'
+      : 'ws://localhost:4000/ws/footfall';
+  const u = process.env.NEXT_PUBLIC_WS_URL || defaultWs;
+  return u;
 }
 
 export type ApiEnvelope<T> = {
@@ -79,3 +81,4 @@ export async function apiFetch<T>(
   }
   return json.data as T;
 }
+
